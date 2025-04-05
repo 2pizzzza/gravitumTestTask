@@ -34,8 +34,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const deleteUser = `-- name: DeleteUser :exec
-DELETE FROM users
-WHERE id = $1
+DELETE FROM users WHERE id = $1
 `
 
 func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
@@ -44,9 +43,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, email, created_at, updated_at
-FROM users
-WHERE email = $1
+SELECT id, username, email, created_at, updated_at FROM users WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -63,9 +60,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, email, created_at, updated_at
-FROM users
-WHERE id = $1
+SELECT id, username, email, created_at, updated_at FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
@@ -83,7 +78,9 @@ func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET username = $2, email = $3, updated_at = NOW()
+SET username = $2,
+    email = $3,
+    updated_at = NOW()
 WHERE id = $1
     RETURNING id, username, email, created_at, updated_at
 `
