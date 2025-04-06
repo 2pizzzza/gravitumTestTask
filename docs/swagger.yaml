@@ -1,0 +1,152 @@
+basePath: /
+definitions:
+  handler.ErrorMessage:
+    properties:
+      message:
+        type: string
+    type: object
+  user.CreateDTO:
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+    type: object
+  user.UpdateDTO:
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+    type: object
+  user.User:
+    properties:
+      create_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      update_at:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple User management API
+  title: User API
+  version: "1.0"
+paths:
+  /user:
+    delete:
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorMessage'
+      summary: Delete user by ID
+      tags:
+      - Users
+    get:
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorMessage'
+      summary: Get user by ID
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorMessage'
+      summary: Create a new user
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: Updated user data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorMessage'
+      summary: Update user by ID
+      tags:
+      - Users
+swagger: "2.0"

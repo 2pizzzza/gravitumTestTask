@@ -17,5 +17,5 @@ SET username = $2,
 WHERE id = $1
     RETURNING *;
 
--- name: DeleteUser :exec
+-- name: DeleteUser :execrows
 DELETE FROM users WHERE id = $1;

@@ -40,14 +40,27 @@ func (s *Service) UpdateUser(ctx context.Context, id int64, dto *user.UpdateDTO)
 }
 
 func (s *Service) DeleteUser(ctx context.Context, id int64) error {
-
+	err := s.repo.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (s *Service) GetUser(ctx context.Context, id int64) (*user.User, error) {
-	return s.repo.GetByID(ctx, id)
+	userRaw, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return userRaw, nil
 }
 
-func (s *Service) GetAllUsers(ctx context.Context) ([]*user.User, error) {
-	return nil, nil
+func (s *Service) GetByEmail(ctx context.Context, email string) (*user.User, error) {
+	userRaw, err := s.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+
+	return userRaw, nil
 }

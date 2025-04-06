@@ -2,6 +2,8 @@ package postgres
 
 import (
 	"context"
+	"errors"
+	"github.com/jackc/pgx/v5"
 	"testTaskGravitum/internal/domain/user"
 )
 
@@ -33,6 +35,9 @@ func (r *UserRepository) Create(ctx context.Context, user *user.User) error {
 func (r *UserRepository) GetByID(ctx context.Context, id int64) (*user.User, error) {
 	dbUser, err := r.queries.GetUserByID(ctx, int32(id))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, user.ErrUserNotFound
+		}
 		return nil, err
 	}
 	return &user.User{
@@ -47,6 +52,9 @@ func (r *UserRepository) GetByID(ctx context.Context, id int64) (*user.User, err
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*user.User, error) {
 	dbUser, err := r.queries.GetUserByEmail(ctx, email)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, user.ErrUserNotFound
+		}
 		return nil, err
 	}
 	return &user.User{
@@ -75,5 +83,12 @@ func (r *UserRepository) Update(ctx context.Context, user *user.User) error {
 }
 
 func (r *UserRepository) Delete(ctx context.Context, id int64) error {
-	return r.queries.DeleteUser(ctx, int32(id))
+	rowsAffected, err := r.queries.DeleteUser(ctx, int32(id))
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return user.ErrUserNotFound
+	}
+	return nil
 }

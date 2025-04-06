@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 	"testTaskGravitum/internal/config"
+	"testTaskGravitum/internal/http/handler"
 	"testTaskGravitum/internal/service/user"
 	internalPostgres "testTaskGravitum/internal/storage/postgres"
 	"testTaskGravitum/pkg/httpserver"
@@ -29,9 +30,13 @@ func New(cfg *config.Config) {
 
 	repo := internalPostgres.NewUsersRepository(conn)
 
-	_ = user.New(repo)
+	service := user.New(repo)
 
 	application := httpserver.New(l, cfg.App.Host, cfg.App.Port)
+
+	handlers := handler.New(service)
+
+	handlers.RegisterRouter(application.Mux)
 
 	go application.MustRun()
 

@@ -15,7 +15,7 @@ type Postgres struct {
 
 func New(ctx context.Context, cnf *config.Config) (*pgxpool.Pool, error) {
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		cnf.DB.Username, cnf.DB.Password, cnf.DB.Password, cnf.DB.Port, cnf.DB.Database,
+		cnf.DB.Username, cnf.DB.Password, cnf.DB.Host, cnf.DB.Port, cnf.DB.Database,
 	)
 
 	cfg, err := pgxpool.ParseConfig(dsn)

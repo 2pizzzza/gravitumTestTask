@@ -2,33 +2,41 @@ package httpserver
 
 import (
 	"fmt"
+	"github.com/rs/cors"
 	"log/slog"
 	"net/http"
 	"testTaskGravitum/pkg/logger"
-	"time"
 )
 
 type Server struct {
 	App *http.Server
 	log *slog.Logger
-
-	address         string
-	readTimeout     time.Duration
-	writeTimeout    time.Duration
-	shutdownTimeout time.Duration
+	Mux *http.ServeMux
 }
 
 func New(log *slog.Logger, host string, port string) *Server {
-	_ = http.NewServeMux()
+	mux := http.NewServeMux()
+
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"*"},
+		ExposedHeaders:   []string{"Content-Length"},
+		AllowCredentials: true,
+	})
+
+	handler := corsHandler.Handler(mux)
+	loggedMux := logger.LoggingMiddleware(log)(handler)
 
 	httpServer := &http.Server{
 		Addr:    fmt.Sprintf("%s:%s", host, port),
-		Handler: nil,
+		Handler: loggedMux,
 	}
 
 	return &Server{
 		log: log,
 		App: httpServer,
+		Mux: mux,
 	}
 }
 
