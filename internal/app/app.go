@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -20,19 +20,26 @@ func New(cfg *config.Config) {
 	ctx := context.Background()
 	l := logger.New(cfg.Log.Level)
 
+	application := httpserver.New(l, cfg.App.Host, cfg.App.Port)
+
 	conn, err := pkgPostgres.New(ctx, cfg)
 	if err != nil {
-		log.Fatal(err)
+		l.Error("Failed connect to database")
+		application.Stop()
 	}
 	l.Info("Server is live")
 
+	err = pkgPostgres.RunMigrations(cfg)
+	if err != nil {
+		l.Error("Failed apply migrations")
+		fmt.Println(err)
+		application.Stop()
+	}
 	_ = internalPostgres.New(conn)
 
 	repo := internalPostgres.NewUsersRepository(conn)
 
 	service := user.New(repo)
-
-	application := httpserver.New(l, cfg.App.Host, cfg.App.Port)
 
 	handlers := handler.New(service)
 
@@ -40,7 +47,7 @@ func New(cfg *config.Config) {
 
 	go application.MustRun()
 
-	stop := make(chan os.Signal)
+	stop := make(chan os.Signal, 1)
 
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
 
