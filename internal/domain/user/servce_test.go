@@ -1,3 +1,4 @@
+//nolint:all
 package user_test
 
 import (

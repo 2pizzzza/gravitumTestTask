@@ -3,6 +3,7 @@ module testTaskGravitum
 go 1.24.0
 
 require (
+	github.com/golang-migrate/migrate/v4 v4.18.2
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/rs/cors v1.11.1
 	github.com/spf13/viper v1.20.1
@@ -20,7 +21,6 @@ require (
 	github.com/go-openapi/spec v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.1 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/golang-migrate/migrate/v4 v4.18.2 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
