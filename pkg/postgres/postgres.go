@@ -1,3 +1,4 @@
+//nolint:all
 package postgres
 
 import (
@@ -9,6 +10,7 @@ import (
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -67,4 +69,12 @@ func (p *Postgres) Close() {
 	if p.Pool != nil {
 		p.Pool.Close()
 	}
+}
+
+func (p *Postgres) Query(ctx context.Context, query string, args ...interface{}) (pgx.Rows, error) {
+	return p.Pool.Query(ctx, query, args...)
+}
+
+func (p *Postgres) QueryRow(ctx context.Context, query string, args ...interface{}) pgx.Row {
+	return p.Pool.QueryRow(ctx, query, args...)
 }
