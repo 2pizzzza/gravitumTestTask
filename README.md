@@ -50,8 +50,8 @@ User Manager API — это RESTful сервис, написанный на Go, 
 
 ### 1. Клонирование репозитория
 ```bash
-git clone <repository-url>
-cd user-manager
+git clone https://github.com/2pizzzza/gravitumTestTask.git
+cd gravitumTestTask
 ```
 
 ### 2. Настройка конфигурации
